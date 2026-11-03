@@ -2,18 +2,27 @@ spring:
   application:
     name: backend-edutransporte
   datasource:
-    url: jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:5432/postgres?sslmode=require
-    username: postgres.sdijocxwzzdoulgcxnic
-    password: 19j783hd92j
+    # Banco na nuvem (Supabase). No Render, defina DB_URL, DB_USERNAME e DB_PASSWORD.
+    url: ${DB_URL:jdbc:postgresql://aws-1-us-west-2.pooler.supabase.com:5432/postgres?sslmode=require}
+    username: ${DB_USERNAME:postgres.sdijocxwzzdoulgcxnic}
+    password: ${DB_PASSWORD:19j783hd92j}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
 
 jwt:
-  secret: "ZUbKA5wnmoK/0MRvEzd1Uj42MqvoG1hRfQ9vFP6J3ukp1pBz9kl2oUvIVzU18txb"
-  expiration-ms: 86400000
+  # No Render, defina JWT_SECRET com um valor forte e privado.
+  secret: ${JWT_SECRET:ZUbKA5wnmoK/0MRvEzd1Uj42MqvoG1hRfQ9vFP6J3ukp1pBz9kl2oUvIVzU18txb}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+admin:
+  # Código de acesso do painel administrativo. No Render, defina ADMIN_CODE.
+  code: ${ADMIN_CODE:admin26}
+
+server:
+  port: ${PORT:8080}

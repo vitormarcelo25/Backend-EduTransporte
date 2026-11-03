@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -32,11 +34,14 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/health").permitAll()
+                        .requestMatchers("/", "/health", "/error").permitAll()
+                        // Login do aluno/motorista e do administrador
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/alunos").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios/alunos").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/cidades/**", "/faculdades/**").permitAll()
+                        // Cadastro de aluno é público (o aluno entra como PENDENTE)
+                        .requestMatchers(HttpMethod.POST, "/alunos", "/api/usuarios/alunos").permitAll()
+                        // Dados para preencher os selects do cadastro
+                        .requestMatchers(HttpMethod.GET, "/cidades", "/cidades/**", "/faculdades", "/faculdades/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/convites/*/validar").permitAll()
                         // anyRequest() precisa ser SEMPRE a última regra
                         .anyRequest().authenticated()

@@ -2,6 +2,7 @@ package com.example.edutransporte.controller;
 
 import com.example.edutransporte.DTOs.AlunoRequest;
 import com.example.edutransporte.DTOs.AlunoResponse;
+import com.example.edutransporte.DTOs.MotivoRequest;
 import com.example.edutransporte.DTOs.MotoristaRequest;
 import com.example.edutransporte.DTOs.MotoristaResponse;
 import com.example.edutransporte.model.Usuario;
@@ -10,6 +11,7 @@ import com.example.edutransporte.service.MotoristaService;
 import com.example.edutransporte.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -75,6 +77,26 @@ public class UsuarioController {
     @PostMapping("/alunos")
     public ResponseEntity<AlunoResponse> criarAluno(@RequestBody AlunoRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.criar(request));
+    }
+
+    // ---------- Aprovação de alunos (somente administrador) ----------
+    @GetMapping("/alunos/solicitacoes")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<AlunoResponse> listarSolicitacoes() {
+        return alunoService.listarSolicitacoes();
+    }
+
+    @PatchMapping("/alunos/{cpf}/aprovar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public AlunoResponse aprovarAluno(@PathVariable String cpf) {
+        return alunoService.aprovar(cpf);
+    }
+
+    @PatchMapping("/alunos/{cpf}/recusar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public AlunoResponse recusarAluno(@PathVariable String cpf, @RequestBody(required = false) MotivoRequest body) {
+        String motivo = body == null ? null : body.motivo();
+        return alunoService.recusar(cpf, motivo);
     }
 
     @DeleteMapping("/alunos/{cpf}")

@@ -1,5 +1,5 @@
 package com.example.edutransporte.model.enums;
 
 public enum TipoUsuario {
-    ALUNO, MOTORISTA
+    ALUNO, MOTORISTA, ADMIN
 }
