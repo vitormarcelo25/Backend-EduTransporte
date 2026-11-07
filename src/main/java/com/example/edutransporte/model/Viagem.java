@@ -34,6 +34,10 @@ public class Viagem {
     @Column(nullable = false)
     private LocalTime horario;
 
+    /** AGENDADA, EM_ANDAMENTO ou ENCERRADA */
+    @Column(length = 20)
+    private String status = "AGENDADA";
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "motorista_cpf", nullable = false)
     private Motorista motorista;

@@ -64,4 +64,16 @@ public class ViagemController {
                                                               @RequestBody PresencaRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(viagemService.registrarPresenca(id, request));
     }
+
+    // Motorista inicia a viagem
+    @PostMapping("/{id}/iniciar")
+    public ViagemResponse iniciar(@PathVariable Integer id) {
+        return viagemService.iniciar(id);
+    }
+
+    // Motorista encerra a viagem
+    @PostMapping("/{id}/encerrar")
+    public ViagemResponse encerrar(@PathVariable Integer id) {
+        return viagemService.encerrar(id);
+    }
 }

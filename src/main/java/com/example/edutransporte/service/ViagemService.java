@@ -73,6 +73,21 @@ public class ViagemService {
         viagemRepository.deleteById(id);
     }
 
+    // ---------- Iniciar / encerrar viagem ----------
+    @Transactional
+    public ViagemResponse iniciar(Integer id) {
+        Viagem viagem = buscarViagem(id);
+        viagem.setStatus("EM_ANDAMENTO");
+        return toResponse(viagemRepository.save(viagem));
+    }
+
+    @Transactional
+    public ViagemResponse encerrar(Integer id) {
+        Viagem viagem = buscarViagem(id);
+        viagem.setStatus("ENCERRADA");
+        return toResponse(viagemRepository.save(viagem));
+    }
+
     // ---------- Paradas ----------
     @Transactional(readOnly = true)
     public List<ParadaResponse> listarParadas(Integer viagemId) {
@@ -130,7 +145,9 @@ public class ViagemService {
     }
 
     private ViagemResponse toResponse(Viagem v) {
+        String status = v.getStatus() == null ? "AGENDADA" : v.getStatus();
         return new ViagemResponse(v.getId(), v.getNomeRota(), v.getTipo(), v.getData(), v.getHorario(),
+                status,
                 v.getMotorista().getCpf(), v.getMotorista().getNomeCompleto(),
                 v.getVeiculo().getPlaca(), v.getVeiculo().getModelo());
     }

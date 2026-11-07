@@ -10,6 +10,7 @@ public record ViagemResponse(
         TipoViagem tipo,
         LocalDate data,
         LocalTime horario,
+        String status,
         String motoristaCpf,
         String motoristaNome,
         String veiculoPlaca,
